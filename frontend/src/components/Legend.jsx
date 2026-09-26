@@ -4,11 +4,13 @@ export function Legend() {
   return (
     <div className="legend">
       {Object.entries(STATUS_LABELS).map(([status, label]) => (
-        <div key={status} className="legend-item">
-          <span className="legend-dot" style={{ background: STATUS_COLORS[status] }} />
+        <span key={status}>
+          <i style={{ background: STATUS_COLORS[status] }} />
           {label}
-        </div>
+        </span>
       ))}
+      <span><i style={{ background: "#fff" }} />Real users</span>
+      <span className="legend-note">- - - hidden until scanned</span>
     </div>
   );
 }

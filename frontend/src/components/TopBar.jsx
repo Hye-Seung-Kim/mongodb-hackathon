@@ -1,21 +1,30 @@
-import { WinRateSparkline } from "./WinRateSparkline";
+import { WinningBar } from "./WinningBar";
 
-export function TopBar({ state }) {
-  const redOwnedCount = Object.entries(state.nodeStatus).filter(([, status]) => status === "taken").length;
-  const latestWinRate = state.blueWinRateHistory.at(-1);
+export function TopBar({ state, playbookVersion }) {
+  const latestWinRate = state.blueWinRateHistory.at(-1) ?? 50;
+  const redHeldCount = Object.values(state.nodeStatus).filter((s) => s === "taken").length;
 
   return (
     <div className="top-bar">
-      <div className="top-bar-stats">
-        <span>Game #{state.gameNumber.toLocaleString()}</span>
-        <span className="top-bar-sep">|</span>
-        <span>Turn {state.turn} / {state.maxTurns}</span>
-        <span className="top-bar-sep">|</span>
-        <span>Red owns {redOwnedCount} node{redOwnedCount === 1 ? "" : "s"}</span>
-        <span className="top-bar-sep">|</span>
-        <span>Blue win rate: {latestWinRate !== undefined ? `${latestWinRate.toFixed(0)}%` : "--"}</span>
+      <div className="top-bar-brand">
+        <span>{"\u{1F6E1}️"}</span> RED vs BLUE
       </div>
-      <WinRateSparkline history={state.blueWinRateHistory} />
+      <Stat label="Game" value={`#${state.gameNumber}`} />
+      <Stat label="Level" value={state.level ?? "--"} />
+      <Stat label="Turn" value={`${state.turn} / ${state.maxTurns || "?"}`} />
+      <Stat label="Red holds" value={`${redHeldCount} node${redHeldCount === 1 ? "" : "s"}`} color={redHeldCount > 0 ? "var(--red)" : undefined} />
+      {playbookVersion !== undefined && <Stat label="Playbook" value={`v${playbookVersion}`} />}
+      <div className="top-bar-spacer" />
+      <WinningBar bluePct={Math.round(latestWinRate)} />
+    </div>
+  );
+}
+
+function Stat({ label, value, color }) {
+  return (
+    <div className="stat">
+      <div className="k">{label}</div>
+      <div className="v" style={color ? { color } : undefined}>{value}</div>
     </div>
   );
 }

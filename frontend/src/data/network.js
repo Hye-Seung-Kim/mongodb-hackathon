@@ -1,16 +1,18 @@
-// Static topology from the design brief's example map. Swap this for
-// whatever the real backend sends per-game once it exists -- everything
-// downstream (engine, 3D scene, log) only cares about the shape
-// { id, name, type, crownJewel } / [idA, idB] pairs, not where it came from.
+// Topology matches the `node_states` keys in the real events.csv exactly
+// (internet/router/laptopA/laptopB/server/printer/database) -- this is the
+// MITRE-ATT&CK-flavored intrusion scenario the real backend actually
+// generated data for, not the earlier DDoS mockup (that dataset doesn't
+// exist; this one does, so it wins). Positions are a fresh hex-ish layout
+// in the same 1000x560 viewBox as before.
 
 export const NODES = [
-  { id: "internet", name: "Internet", type: "gateway" },
-  { id: "router", name: "Router", type: "router" },
-  { id: "laptopA", name: "Laptop A", type: "laptop" },
-  { id: "laptopB", name: "Laptop B", type: "laptop" },
-  { id: "server", name: "Server", type: "server" },
-  { id: "printer", name: "Printer", type: "printer" },
-  { id: "database", name: "Database", type: "database", crownJewel: true },
+  { id: "internet", name: "Internet", pos: [130, 280], r: 30 },
+  { id: "router", name: "Router", pos: [320, 280], r: 32 },
+  { id: "laptopA", name: "Laptop A", pos: [500, 150], r: 30 },
+  { id: "laptopB", name: "Laptop B", pos: [500, 410], r: 30 },
+  { id: "server", name: "Server", pos: [680, 150], r: 32 },
+  { id: "printer", name: "Printer", pos: [680, 410], r: 28 },
+  { id: "database", name: "Database", pos: [880, 280], r: 36, crownJewel: true, icon: "\u{1F451}" },
 ];
 
 export const EDGES = [
@@ -23,33 +25,10 @@ export const EDGES = [
   ["printer", "database"],
 ];
 
-// Hand-placed hex-ish layout in 3D space (X/Z ground plane, Y for a little
-// vertical variety) so the graph reads clearly from the default camera
-// angle. The crown jewel sits highest -- literally the thing worth defending.
-export const NODE_POSITIONS = {
-  internet: [-4.2, 0, 0],
-  router: [-2.2, 0, 0],
-  laptopA: [-0.4, 0.4, -1.6],
-  laptopB: [-0.4, -0.4, 1.6],
-  server: [1.8, 0.6, -1.8],
-  printer: [1.8, -0.6, 1.8],
-  database: [4, 1.2, 0],
-};
-
-export const ATTACKS = {
-  phishing: (node) => `Sent a phishing email to ${node} -- waiting to see if someone clicks`,
-  password_guessing: (node) => `Tried common passwords against ${node}`,
-  exploit_old_software: (node) => `Exploited an unpatched flaw on ${node}`,
-  steal_passwords: (node) => `Stole saved logins from ${node}`,
-  move_sideways: (from, to) => `Hopped from ${from} to ${to} using stolen access`,
-  steal_data: (node) => `Copying files off ${node}...`,
-};
-
-export const DEFENSES = {
-  scan: (node) => `Scanned ${node} for signs of intrusion`,
-  patch: (node) => `Patched ${node} (took a full turn)`,
-  reset_passwords: (node) => `Reset passwords on ${node}`,
-  firewall_rule: (from, to) => `Added a firewall rule blocking ${from} <-> ${to}`,
-  isolate_node: (node) => `Isolated ${node} -- unplugged, but safe`,
-  restore_from_backup: (node) => `Restored ${node} from backup`,
+// The four states real node_states values map onto -- see lib/colors.js.
+export const NODE_STATE_TO_STATUS = {
+  blue: "safe",
+  amber: "attacked",
+  red: "taken",
+  gray: "offline",
 };

@@ -1,0 +1,5 @@
+lesson_id,side,level,game_id,harness_version,text,created_at
+L_0107,blue,2,g_0031,2,Level 2 phishes a laptop in the first 1-2 turns; review laptop logins early.,2026-09-26T13:40:12Z
+L_0112,blue,2,g_0035,2,"After a credential theft alert, reset passwords AND isolate; resetting alone lets Red retry.",2026-09-26T13:48:30Z
+L_0151,blue,2,g_0042,3,Restoring with MFA on stopped re-phishing of the same laptop.,2026-09-26T14:02:35Z
+L_0188,blue,3,g_0050,4,"Level 3 uses stolen accounts that look normal; watch for logins at odd times, not alerts.",2026-09-26T14:22:15Z

@@ -1,0 +1,23 @@
+level,level_name,step,technique,mitre,from,target,base_success,detect_chance,precondition,effect,what_blue_must_learn
+1,Noisy opportunist,1,Brute force password,T1110,internet,router or laptop,0.35,0.8,Target has no MFA,Foothold on target,"Enable MFA; brute force is loud, so act on the first alert"
+1,Noisy opportunist,2,Exploit unpatched software,T1190,foothold,server,0.5,0.6,Server unpatched (0.05 if patched),Server compromised,Patch early
+1,Noisy opportunist,3,Steal data,T1041,server,database,0.7,0.7,Server compromised,Red wins,Block Server -> Database when Server is suspicious
+2,Phisher,1,Phishing email,T1566,internet,laptopA or laptopB,0.6,0.3,None (0.10 if MFA on),Foothold on laptop,Check laptop logins early; MFA
+2,Phisher,2,Dump saved passwords,T1003,foothold,same device,0.7,0.6,Foothold,Creds stolen,Reset passwords on credential alerts
+2,Phisher,3,Move to next device,T1021,foothold,server or printer,0.6,0.5,Creds stolen and not reset,Next device compromised,Isolate after reset so Red can't retry
+2,Phisher,4,Move to crown jewel,T1021,server or printer,database,0.5,0.5,Adjacent device compromised,Database compromised,Firewall both paths into Database
+2,Phisher,5,Steal data,T1041,database,internet,0.8,0.5,Database compromised,Red wins,Watch outbound data
+3,Quiet operator,1,Phishing email,T1566,internet,laptop,0.6,0.2,None (0.10 if MFA on),Foothold on laptop,Alerts won't be enough; hunt proactively
+3,Quiet operator,2,Wait 1-2 turns,,foothold,,1.0,0.0,Foothold,Blue's recent scans expire,"Re-check devices, not just the ones that alerted"
+3,Quiet operator,3,Log in with stolen real account,T1078,foothold,printer (least watched),0.8,0.15,"Creds stolen, no MFA on target",Printer compromised,Watch odd-time logins; don't ignore the printer
+3,Quiet operator,4,Slow data theft over 3 turns,T1041,database,internet,0.6,0.2,Database compromised,Red wins after 3 turns,Watch outbound data every turn
+4,Persistent,1,Phishing email,T1566,internet,laptop,0.6,0.3,None (0.10 if MFA on),Foothold on laptop,MFA; early login checks
+4,Persistent,2,Plant backdoor (scheduled task),T1053,foothold,same device,0.8,0.25,Foothold,Survives password reset,"After a reset, also hunt for backdoors"
+4,Persistent,3,Clear logs,T1070,foothold,same device,0.7,0.2,Foothold,Lowers detect_chance on this device,Treat missing logs as a signal
+4,Persistent,4,Re-enter through backdoor,,backdoor,same device,0.9,0.2,Backdoor present,Foothold restored after cleanup,"Restore from backup, not just reset"
+4,Persistent,5,Move to crown jewel and steal data,T1021;T1041,foothold,database,0.5,0.4,Path to Database open,Red wins,Segment the network early
+5,Advanced,1,Decoy: loud brute force,T1110,internet,laptopB,0.2,0.9,None,Distracts Blue,Don't spend every turn on the loud alert
+5,Advanced,2,Real attack: quiet phishing,T1566,internet,laptopA,0.6,0.15,None (0.10 if MFA on),Foothold on Laptop A,Check the quiet branch too
+5,Advanced,3,Plant backdoor,T1053,foothold,laptopA,0.8,0.25,Foothold,Survives password reset,Hunt for backdoors
+5,Advanced,4,Destroy backups,T1490,foothold,server,0.6,0.35,Server reachable,Blue's restore stops working,Protect backups (isolate or harden Server)
+5,Advanced,5,Ransomware on crown jewel,T1486,server,database,0.5,0.5,Backups destroyed and path open,Red wins,Block Server -> Database before backups fall
